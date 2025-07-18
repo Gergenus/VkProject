@@ -32,6 +32,7 @@ func main() {
 	{
 		posts.POST("/create", hnd.CreatePost)
 	}
+	e.GET("/posts", hnd.Posts, middlew.NotCompulsoryAuth)
 	e.Start(":" + cfg.HTTPPort)
 
 }

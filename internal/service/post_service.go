@@ -20,3 +20,16 @@ func (u *UserService) CreatePost(ctx context.Context, post models.Post) (int, er
 	log.Info("post created", slog.Int("postId", id))
 	return id, nil
 }
+
+func (u *UserService) Posts(ctx context.Context, page, pageSize int, userId, sortBy, sortDir string, minPrice, maxPrice float64) (*[]models.ReturnPost, error) {
+	const op = "posts.service.Posts"
+	log := u.log.With(slog.String("op", op))
+	log.Info("getting posts")
+
+	posts, err := u.postRepo.Posts(ctx, page, pageSize, userId, sortBy, sortDir, minPrice, maxPrice)
+	if err != nil {
+		log.Error("failed to get posts", slog.String("error", err.Error()))
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+	return posts, nil
+}

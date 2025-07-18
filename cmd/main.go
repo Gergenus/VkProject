@@ -17,8 +17,8 @@ func main() {
 	log := logger.SetupLogger(cfg.LogLevel, cfg.LogType)
 	database := db.InitDB(cfg.PostgresURL)
 	repo := repository.NewPostgresRepository(database)
-	srv := service.NewUserService(repo, log, cfg.TokenTTL, cfg.JWTSecret)
-	hnd := handlers.NewUserHandler(srv)
+	srv := service.NewUserService(repo, repo, log, cfg.TokenTTL, cfg.JWTSecret)
+	hnd := handlers.NewUserHandler(srv, srv)
 
 	e := echo.New()
 	e.Use(middleware.Recover())
@@ -28,16 +28,10 @@ func main() {
 		auth.POST("/signUp", hnd.SignUp)
 		auth.POST("/signIn", hnd.SignIn)
 	}
-
-	e.GET("/", ZV, middlew.TestMiddleware)
-
+	posts := e.Group("/post", middlew.AuthMiddleware)
+	{
+		posts.POST("/create", hnd.CreatePost)
+	}
 	e.Start(":" + cfg.HTTPPort)
 
-}
-
-func ZV(c echo.Context) error {
-	return c.JSON(200, map[string]interface{}{
-		"uid":   c.Get("uid"),
-		"login": c.Get("login"),
-	})
 }

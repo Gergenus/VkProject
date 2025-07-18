@@ -15,6 +15,7 @@ import (
 
 type UserService struct {
 	repo      repository.UserRepositoryInterface
+	postRepo  repository.PostRepositoryInterface
 	log       *slog.Logger
 	tokenTTL  time.Duration
 	jwtSecret string
@@ -25,12 +26,13 @@ var (
 	ErrUserExists         = errors.New("user exists")
 )
 
-func NewUserService(repo repository.UserRepositoryInterface, log *slog.Logger, tokenTTL time.Duration, jwtSecret string) *UserService {
+func NewUserService(repo repository.UserRepositoryInterface, postRepo repository.PostRepositoryInterface, log *slog.Logger, tokenTTL time.Duration, jwtSecret string) *UserService {
 	return &UserService{
 		repo:      repo,
 		log:       log,
 		tokenTTL:  tokenTTL,
 		jwtSecret: jwtSecret,
+		postRepo:  postRepo,
 	}
 }
 

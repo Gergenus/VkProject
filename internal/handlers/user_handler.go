@@ -12,12 +12,14 @@ import (
 const CookieTTL = 86400
 
 type UserHandlers struct {
-	srv service.UserServiceInterface
+	srv     service.UserServiceInterface
+	postSrv service.PostServiceInterface
 }
 
-func NewUserHandler(srv service.UserServiceInterface) *UserHandlers {
+func NewUserHandler(srv service.UserServiceInterface, postSrv service.PostServiceInterface) *UserHandlers {
 	return &UserHandlers{
-		srv: srv,
+		srv:     srv,
+		postSrv: postSrv,
 	}
 }
 

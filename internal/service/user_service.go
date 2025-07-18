@@ -53,13 +53,13 @@ func (u *UserService) RegisterNewUser(ctx context.Context, login, password strin
 	user, err := u.repo.SaveUser(ctx, login, string(passHash))
 	if err != nil {
 		if errors.Is(err, repository.ErrUserExists) {
-			log.Warn("user exists", slog.String("login", login))
-			return models.User{}, fmt.Errorf("%s: %w", op, err)
+			log.Warn("user exists")
+			return models.User{}, fmt.Errorf("%s: %w", op, ErrUserExists)
 		}
 		log.Error("failed to save user", slog.String("error", err.Error()))
 		return models.User{}, fmt.Errorf("%s: %w", op, err)
 	}
-	log.Info("user has been created", slog.String("login", login))
+	log.Info("user has been created")
 	return user, nil
 }
 
@@ -72,16 +72,16 @@ func (u *UserService) Login(ctx context.Context, login, password string) (string
 	user, err := u.repo.User(ctx, login)
 	if err != nil {
 		if errors.Is(err, repository.ErrUserNotFound) {
-			log.Warn("user not found", slog.String("login", login), slog.String("error", err.Error()))
+			log.Warn("user not found", slog.String("error", err.Error()))
 			return "", fmt.Errorf("%s; %w", op, ErrInvalidCredentials)
 		}
 	}
 	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password)); err != nil {
-		log.Info("invalid credentials", slog.String("login", login), slog.String("error", err.Error()))
+		log.Info("invalid credentials", slog.String("error", err.Error()))
 		return "", fmt.Errorf("%s: %w", op, ErrInvalidCredentials)
 	}
 
-	log.Info("user logged in successfully", slog.String("login", login))
+	log.Info("user logged in successfully")
 
 	token, err := jwt.GenerateNewToken(user.ID, user.Login, u.tokenTTL, u.jwtSecret)
 	if err != nil {

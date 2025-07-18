@@ -6,7 +6,7 @@ import (
 )
 
 func SetupLogger(level, handlerType string) *slog.Logger {
-	if handlerType == "json" {
+	if handlerType == "text" {
 		switch level {
 		case "debug":
 			return slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}))
@@ -16,7 +16,7 @@ func SetupLogger(level, handlerType string) *slog.Logger {
 			panic("incorrect logger level")
 		}
 	}
-	if handlerType == "text" {
+	if handlerType == "json" {
 		switch level {
 		case "debug":
 			return slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}))

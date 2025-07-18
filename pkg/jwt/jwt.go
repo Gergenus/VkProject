@@ -29,6 +29,9 @@ func GenerateNewToken(uid uuid.UUID, login string, duration time.Duration, secre
 func ParseToken(token, secret string) (string, string, error) {
 	tkn, err := jwt.Parse(token, func(t *jwt.Token) (any, error) { return []byte(secret), nil })
 	if err != nil {
+		if errors.Is(err, jwt.ErrSignatureInvalid) {
+			return "", "", ErrInvalidToken
+		}
 		return "", "", err
 	}
 	if _, ok := tkn.Method.(*jwt.SigningMethodHMAC); !ok {

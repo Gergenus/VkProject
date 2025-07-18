@@ -1,6 +1,7 @@
 package middlew
 
 import (
+	"errors"
 	"net/http"
 	"os"
 
@@ -24,6 +25,11 @@ func TestMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		token := coookie.Value
 		uid, login, err := jwt.ParseToken(token, os.Getenv("JWT_SECRET"))
 		if err != nil {
+			if errors.Is(err, jwt.ErrInvalidToken) {
+				return c.JSON(http.StatusUnauthorized, map[string]string{
+					"error": "invalid auth token",
+				})
+			}
 			return c.JSON(http.StatusInternalServerError, map[string]string{
 				"error": "inernal server error",
 			})

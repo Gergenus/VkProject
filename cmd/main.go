@@ -16,6 +16,7 @@ func main() {
 	cfg := config.InitConfig()
 	log := logger.SetupLogger(cfg.LogLevel, cfg.LogType)
 	database := db.InitDB(cfg.PostgresURL)
+	defer database.DB.Close()
 	repo := repository.NewPostgresRepository(database)
 	srv := service.NewUserService(repo, repo, log, cfg.TokenTTL, cfg.JWTSecret)
 	hnd := handlers.NewUserHandler(srv, srv)
@@ -28,11 +29,9 @@ func main() {
 		auth.POST("/signUp", hnd.SignUp)
 		auth.POST("/signIn", hnd.SignIn)
 	}
-	posts := e.Group("/post", middlew.AuthMiddleware)
-	{
-		posts.POST("/create", hnd.CreatePost)
-	}
-	e.GET("/posts", hnd.Posts, middlew.NotCompulsoryAuth)
-	e.Start(":" + cfg.HTTPPort)
 
+	e.POST("/post/create", hnd.CreatePost, middlew.AuthMiddleware)
+	e.GET("/posts", hnd.Posts, middlew.NotCompulsoryAuth)
+
+	e.Start(":" + cfg.HTTPPort)
 }

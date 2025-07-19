@@ -6,12 +6,6 @@ import (
 	"github.com/google/uuid"
 )
 
-type User struct {
-	ID           uuid.UUID `json:"id"`
-	Login        string    `json:"login"`
-	PasswordHash string    `json:"password_hash"`
-}
-
 type ProductPost struct {
 	ID           int       `json:"id,omitempty"`
 	UserID       uuid.UUID `json:"user_id,omitempty"`

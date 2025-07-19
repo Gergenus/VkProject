@@ -30,32 +30,32 @@ func (u *UserHandlers) CreatePost(c echo.Context) error {
 	if err != nil {
 		if errors.Is(err, service.ErrHeadRequestFailed) {
 			return c.JSON(http.StatusBadRequest, map[string]string{
-				"error": err.Error(),
+				"error": "failed to get file size",
 			})
 		}
 		if errors.Is(err, service.ErrIncorrectContents) {
 			return c.JSON(http.StatusBadRequest, map[string]string{
-				"error": err.Error(),
+				"error": "contents should be less than 2500 chars",
 			})
 		}
 		if errors.Is(err, service.ErrIncorrectImageAddress) {
 			return c.JSON(http.StatusBadRequest, map[string]string{
-				"error": err.Error(),
+				"error": "invalid photo type",
 			})
 		}
 		if errors.Is(err, service.ErrIncorrectImageSize) {
 			return c.JSON(http.StatusBadRequest, map[string]string{
-				"error": err.Error(),
+				"error": "content size should be less than 5mb",
 			})
 		}
 		if errors.Is(err, service.ErrIncorrectPrice) {
 			return c.JSON(http.StatusBadRequest, map[string]string{
-				"error": err.Error(),
+				"error": "subject cannot be negative",
 			})
 		}
 		if errors.Is(err, service.ErrIncorrectSubject) {
 			return c.JSON(http.StatusBadRequest, map[string]string{
-				"error": err.Error(),
+				"error": "subject should be less than 100 chars",
 			})
 		}
 		return c.JSON(http.StatusInternalServerError, map[string]string{
@@ -97,16 +97,15 @@ func (p *UserHandlers) Posts(c echo.Context) error {
 			"error": "invalid payload",
 		})
 	}
+	var sortBy string
+	sortBy = c.QueryParam("sort_by")
 
-	sortBy := c.QueryParam("sort_by")
-	if sortBy != "price" && sortBy != "created_at" {
-		return c.JSON(http.StatusBadRequest, map[string]string{
-			"error": "invalid payload",
-		})
-	}
-
-	sortDir := c.QueryParam("sort_dir")
-	if sortDir != "asc" && sortDir != "desc" {
+	var sortDir string
+	sortDir = c.QueryParam("sort_dir")
+	if sortBy == "" && sortDir == "" {
+		sortBy = "created_at"
+		sortDir = "desc"
+	} else if sortBy == "" && sortDir != "" || sortBy != "" && sortDir == "" {
 		return c.JSON(http.StatusBadRequest, map[string]string{
 			"error": "invalid payload",
 		})
@@ -136,7 +135,6 @@ func (p *UserHandlers) Posts(c echo.Context) error {
 			})
 		}
 	}
-
 	posts, err := p.postSrv.Posts(c.Request().Context(), page, pageSize, userId, sortBy, sortDir, minPrice, maxPrice)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{

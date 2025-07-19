@@ -48,7 +48,9 @@ func (u *UserService) CreatePost(ctx context.Context, post models.ProductPost) (
 	}
 
 	resp, err := http.Head(post.ImageAddress)
-	if err != nil {
+	fmt.Println(resp)
+	if err != nil || resp.Status != "200 OK" {
+
 		return 0, fmt.Errorf("%s: %w", op, ErrHeadRequestFailed)
 	}
 	if resp.ContentLength > int64(5*1024*1024) {

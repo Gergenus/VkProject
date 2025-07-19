@@ -4,8 +4,8 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/Gergenus/VkProject/internal/models"
 	"github.com/Gergenus/VkProject/internal/service"
+	"github.com/Gergenus/VkProject/internal/transport/http/dto"
 	"github.com/labstack/echo/v4"
 )
 
@@ -24,7 +24,7 @@ func NewUserHandler(srv service.UserServiceInterface, postSrv service.PostServic
 }
 
 func (u *UserHandlers) SignUp(c echo.Context) error {
-	var user models.RegisterRequest
+	var user dto.RegisterRequest
 
 	err := c.Bind(&user)
 	if err != nil {
@@ -61,7 +61,7 @@ func (u *UserHandlers) SignUp(c echo.Context) error {
 }
 
 func (u *UserHandlers) SignIn(c echo.Context) error {
-	var user models.SignInRequest
+	var user dto.SignInRequest
 	err := c.Bind(&user)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{

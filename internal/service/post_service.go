@@ -6,9 +6,10 @@ import (
 	"log/slog"
 
 	"github.com/Gergenus/VkProject/internal/models"
+	"github.com/Gergenus/VkProject/internal/transport/http/dto"
 )
 
-func (u *UserService) CreatePost(ctx context.Context, post models.Post) (int, error) {
+func (u *UserService) CreatePost(ctx context.Context, post models.ProductPost) (int, error) {
 	const op = "post.service.CreatePost"
 	log := u.log.With(slog.String("op", op))
 	log.Info("creating post", slog.String("userID", post.UserID.String()))
@@ -21,7 +22,7 @@ func (u *UserService) CreatePost(ctx context.Context, post models.Post) (int, er
 	return id, nil
 }
 
-func (u *UserService) Posts(ctx context.Context, page, pageSize int, userId, sortBy, sortDir string, minPrice, maxPrice float64) (*[]models.ReturnPost, error) {
+func (u *UserService) Posts(ctx context.Context, page, pageSize int, userId, sortBy, sortDir string, minPrice, maxPrice float64) (*[]dto.ResponsePost, error) {
 	const op = "posts.service.Posts"
 	log := u.log.With(slog.String("op", op))
 	log.Info("getting posts")

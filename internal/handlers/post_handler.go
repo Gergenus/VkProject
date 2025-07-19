@@ -16,7 +16,7 @@ var allowePhotoTypes = map[string]bool{
 }
 
 func (u *UserHandlers) CreatePost(c echo.Context) error {
-	var data models.Post
+	var data models.ProductPost
 
 	if err := c.Bind(&data); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{

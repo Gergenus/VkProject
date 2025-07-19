@@ -5,9 +5,10 @@ import (
 	"fmt"
 
 	"github.com/Gergenus/VkProject/internal/models"
+	"github.com/Gergenus/VkProject/internal/transport/http/dto"
 )
 
-func (p *PostgresRepository) CreatePost(ctx context.Context, post models.Post) (int, error) {
+func (p *PostgresRepository) CreatePost(ctx context.Context, post models.ProductPost) (int, error) {
 	const op = "post.repository.CreatePost"
 	var id int
 
@@ -19,9 +20,9 @@ func (p *PostgresRepository) CreatePost(ctx context.Context, post models.Post) (
 	return id, nil
 }
 
-func (p *PostgresRepository) Posts(ctx context.Context, page, pageSize int, userId, sortBy, sortDir string, minPrice, maxPrice float64) (*[]models.ReturnPost, error) {
+func (p *PostgresRepository) Posts(ctx context.Context, page, pageSize int, userId, sortBy, sortDir string, minPrice, maxPrice float64) (*[]dto.ResponsePost, error) {
 	const op = "post.repository.Posts"
-	var posts []models.ReturnPost
+	var posts []dto.ResponsePost
 	query := `
         SELECT 
             p.id, 
@@ -51,7 +52,7 @@ func (p *PostgresRepository) Posts(ctx context.Context, page, pageSize int, user
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 	for rows.Next() {
-		var post models.ReturnPost
+		var post dto.ResponsePost
 		var uid string
 		err = rows.Scan(&post.ID, &uid, &post.Login, &post.Subject, &post.PostText, &post.ImageAddress, &post.Price, &post.CreatedAt)
 		if err != nil {

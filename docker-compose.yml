@@ -17,5 +17,16 @@ services:
       timeout: 5s
       retries: 5
 
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vk_app
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - app_db
+  
 volumes:
   app_db_data:

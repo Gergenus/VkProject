@@ -18,7 +18,7 @@
     ```
 4. Примените миграции
    ```bash
-   goose -dir ./internal/migrations/ postgres "POSTGRES_URL=postgresql://admin:12345@app_db:5432/app_db?sslmode=disable" up
+   goose -dir ./internal/migrations/ postgres "postgresql://admin:12345@localhost:5433/app_db?sslmode=disable" up
    ```
 # Взаимодйествие с API
 ### 1. Регистрация

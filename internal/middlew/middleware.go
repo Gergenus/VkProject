@@ -31,7 +31,7 @@ func AuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 				})
 			}
 			return c.JSON(http.StatusInternalServerError, map[string]string{
-				"error": "inernal server error",
+				"error": "internal server error",
 			})
 		}
 

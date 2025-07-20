@@ -32,6 +32,9 @@ func ParseToken(token, secret string) (string, string, error) {
 		if errors.Is(err, jwt.ErrSignatureInvalid) {
 			return "", "", ErrInvalidToken
 		}
+		if errors.Is(err, jwt.ErrTokenExpired) {
+			return "", "", ErrInvalidToken
+		}
 		return "", "", err
 	}
 	if _, ok := tkn.Method.(*jwt.SigningMethodHMAC); !ok {
